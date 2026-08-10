@@ -29,7 +29,7 @@ The frequency response and the NEP for the best SNR signal
 
 The SNR can be effect with differnt wavelenght that are selected from the reflectivity spectra using an acousto-optical tunable filter (AOTF)
 
-![Experimental setup scheme](Image_5.png)
+![Experimental setup scheme](Image_5.jpg)
 
 
 > **Note:** Make sure all the circuits are terminated with 50 Ω. The excitation amplitude of the ultrasound transducer should be measured right before the transducer, not at the wave generator, because there are losses along the way and the true excitation amplitude is important for accurate sensitivity measurements.
