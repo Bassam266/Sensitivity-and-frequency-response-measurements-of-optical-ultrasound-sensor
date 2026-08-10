@@ -12,8 +12,8 @@ The platform integrates both the acoustic and optical systems to measure the ove
 3. The wave generator class: `DG5000Pro.m`
 4. The oscilloscope class: `T3DSO2502A.m`
 5. The motors class: `PIMotorController.m`
-6. The optical spectrum analyzer (OSA) class: `<filename>.m`
-7. Acquiring the spectrum from the OSA: `<filename>.m`
+6. The optical spectrum analyzer (OSA) class: `YokogawaOSA.m`
+7. Acquiring the spectrum from the OSA: `OSA_acquire_simple.m`
 
 In the lab, we used a GUI designed on top of this code to control the system.
 
