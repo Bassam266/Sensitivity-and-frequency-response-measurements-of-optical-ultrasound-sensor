@@ -17,4 +17,19 @@ The platform integrates both the acoustic and optical systems to measure the ove
 
 In the lab, we used a GUI designed on top of this code to control the system.
 
+The SNR map of the xy raster scan; the best SNR is indicated by the best alignment.
+![Experimental setup scheme](Image_2.png)
+
+The frequency response and the NEP for the best SNR signal
+
+<p align="center">
+  <img src="Image_3.png" width="45%" />
+  <img src="Image_4.png" width="45%" />
+</p>
+
+The SNR can be effect with differnt wavelenght that are selected from the reflectivity spectra using an acousto-optical tunable filter (AOTF)
+
+![Experimental setup scheme](Image_5.png)
+
+
 > **Note:** Make sure all the circuits are terminated with 50 Ω. The excitation amplitude of the ultrasound transducer should be measured right before the transducer, not at the wave generator, because there are losses along the way and the true excitation amplitude is important for accurate sensitivity measurements.
