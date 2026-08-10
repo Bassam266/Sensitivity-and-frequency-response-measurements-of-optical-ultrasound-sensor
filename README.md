@@ -1,35 +1,62 @@
-# Sensitivity and frequency response measurements of optical ultrasound sensor
-We also call it an acousto-optical characterization platform because we measure the optical-ultrasound sensor response under different applied pressures and ultrasound frequencies.
+# Sensitivity and Frequency Response Measurements of an Optical Ultrasound Sensor
 
-The system works first by maximizing the echo to make sure the pressure is applied at the correct position on the sensor; this is done using the motor with the z scan. After confirming the correct focal ultrasound point on the sensor, the xy scan starts to align the focal zone of the ultrasound with the interrogation laser beam. The setup is presented in the following scheme:
+An **acousto-optical characterization platform** for measuring the response of an optical-ultrasound sensor under different applied pressures and ultrasound frequencies.
 
-![Experimental setup scheme](Image_1.png)
+## Overview
 
-The platform integrates both the acoustic and optical systems to measure the overall sensitivity, the noise-equivalent pressure, and the frequency response of the sensor. The following code is used to perform an xy scan of the acoustic field with the optical beam:
+The system operates in two stages:
 
-1. The main xy scan alignment script: `xy_raster_scan.m`
-2. The frequency sweep script: `freq_scan.m`
-3. The wave generator class: `DG5000Pro.m`
-4. The oscilloscope class: `T3DSO2502A.m`
-5. The motors class: `PIMotorController.m`
-6. The optical spectrum analyzer (OSA) class: `YokogawaOSA.m`
-7. Acquiring the spectrum from the OSA: `OSA_acquire_simple.m`
+1. **Z scan** — the echo is maximized to ensure pressure is applied at the correct position on the sensor, locating the correct focal ultrasound point.
+2. **XY scan** — once the focal point is confirmed, the xy scan aligns the focal zone of the ultrasound with the interrogation laser beam.
 
-In the lab, we used a GUI designed on top of this code to control the system.
+Together, the acoustic and optical systems measure the overall **sensitivity**, the **noise-equivalent pressure (NEP)**, and the **frequency response** of the sensor.
 
-The SNR map of the xy raster scan; the best SNR is indicated by the best alignment.
-![Experimental setup scheme](Image_2.png)
+<p align="center">
+  <img src="Image_1.png" width="70%" /><br>
+  <em>Figure 1 — Experimental setup of the acousto-optical characterization platform.</em>
+</p>
 
-The frequency response and the NEP for the best SNR signal
+## Code Structure
+
+The following scripts and classes perform an xy scan of the acoustic field with the optical beam:
+
+| File | Description |
+|------|-------------|
+| `xy_raster_scan.m` | Main xy scan alignment script |
+| `freq_scan.m` | Frequency sweep script |
+| `DG5000Pro.m` | Wave generator class |
+| `T3DSO2502A.m` | Oscilloscope class |
+| `PIMotorController.m` | Motor controller class |
+| `YokogawaOSA.m` | Optical spectrum analyzer (OSA) class |
+| `OSA_acquire_simple.m` | Spectrum acquisition from the OSA |
+
+In the lab, a GUI built on top of this code is used to control the system.
+
+## Results
+
+**SNR map from the xy raster scan.** The highest SNR corresponds to the best alignment.
+
+<p align="center">
+  <img src="Image_2.png" width="60%" /><br>
+  <em>Figure 2 — SNR map of the xy raster scan.</em>
+</p>
+
+**Frequency response and NEP** for the best-SNR signal.
 
 <p align="center">
   <img src="Image_3.png" width="45%" />
-  <img src="Image_4.png" width="45%" />
+  <img src="Image_4.png" width="45%" /><br>
+  <em>Figure 3 — Frequency response (left) and noise-equivalent pressure (right) at the optimal alignment.</em>
 </p>
 
-The SNR can be effect with differnt wavelenght that are selected from the reflectivity spectra using an acousto-optical tunable filter (AOTF)
+**Wavelength dependence.** The SNR can be tuned by selecting different wavelengths from the reflectivity spectrum using an acousto-optic tunable filter (AOTF).
 
-![Experimental setup scheme](Image_5.jpg)
+<p align="center">
+  <img src="Image_5.jpg" width="60%" /><br>
+  <em>Figure 4 — SNR variation across wavelengths selected with the AOTF.</em>
+</p>
 
+## ⚠️ Important Notes
 
-> **Note:** Make sure all the circuits are terminated with 50 Ω. The excitation amplitude of the ultrasound transducer should be measured right before the transducer, not at the wave generator, because there are losses along the way and the true excitation amplitude is important for accurate sensitivity measurements.
+- Make sure all circuits are terminated with **50 Ω**.
+- Measure the excitation amplitude **right before the transducer**, not at the wave generator — losses along the cable mean the true excitation amplitude differs, and this value is critical for accurate sensitivity measurements.
