@@ -18,7 +18,7 @@ Together, the acoustic and optical systems measure the overall **sensitivity**, 
 
 ## Code Structure
 
-The following scripts and classes perform an xy scan of the acoustic field with the optical beam:
+The following scripts and classes perform an xy scan of the acoustic field with the optical beam and analysis:
 
 | File | Description |
 |------|-------------|
@@ -29,6 +29,9 @@ The following scripts and classes perform an xy scan of the acoustic field with 
 | `PIMotorController.m` | Motor controller class |
 | `YokogawaOSA.m` | Optical spectrum analyzer (OSA) class |
 | `OSA_acquire_simple.m` | Spectrum acquisition from the OSA |
+| `xyAnalysis_rasterScan.m` | SNR map |
+| `Frequency_response_NEP_analysis.m` | freq response and NEP analysis |
+
 
 In the lab, a GUI built on top of this code is used to control the system.
 
