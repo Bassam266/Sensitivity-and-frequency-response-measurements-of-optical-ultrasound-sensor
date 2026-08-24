@@ -3,10 +3,10 @@ clear;
 clc;
 close all;
 
-%% ---------------- SETTINGS ----------------
+%% Setting
 
 osaConfig = struct();
-osaConfig.ip = '10.48.20.178';   % Change if DHCP assigns another OSA IP
+osaConfig.ip = '10.48.20.178';   % updated IP
 osaConfig.port = '10001';
 osaConfig.user = 'yokogawa';
 osaConfig.password = '1234';
@@ -15,7 +15,7 @@ osaConfig.timeout_ms = 60000;
 saveData = false;                % Set true to save the spectrum
 saveFolder = pwd;                % Where to save if saveData = true
 
-%% ---------------- CONNECT ----------------
+%% Connect
 
 fprintf('Connecting to Yokogawa OSA at %s...\n', osaConfig.ip);
 
@@ -31,7 +31,7 @@ osa.SetASEDefaults('timeout', osaConfig.timeout_ms);
 osa.GetID();
 fprintf('Connected instrument: %s\n', strtrim(char(osa.buffer.string)));
 
-%% ---------------- ACQUIRE ----------------
+%% Acquire
 
 fprintf('Running single sweep and retrieving spectrum...\n');
 
@@ -40,10 +40,8 @@ osa.SweepAndRetrieve();
 lambda = osa.data.X(:);   % wavelength [m]
 Y = osa.data.Y(:);        % intensity  
 
-fprintf('Acquired %d points, %.3f to %.3f nm\n', ...
-    numel(lambda), min(lambda) * 1e9, max(lambda) * 1e9);
 
-%% ---------------- PLOT ----------------
+%%  Plot 
 
 figure(1);
 plot(lambda * 1e9, Y);
@@ -52,7 +50,7 @@ ylabel('Intensity');
 title('OSA spectrum');
 grid on;
 
-%% ---------------- SAVE ----------------
+%%  Save data
 
 if saveData
     timestr = datestr(now, 'yyyy-mm-dd_HHMMSS');
@@ -63,6 +61,6 @@ if saveData
     fprintf('Saved spectrum to:\n%s\n', saveFile);
 end
 
-%% ---------------- CLOSE ----------------
+%% Close
 delete(osa);
 fprintf('Done. OSA connection closed.\n');
