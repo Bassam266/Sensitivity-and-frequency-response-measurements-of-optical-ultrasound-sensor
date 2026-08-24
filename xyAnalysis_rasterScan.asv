@@ -1,0 +1,130 @@
+%%
+% --- allData is nRows x nCols cell, each cell is a column trace; t is time vector ---
+[nRows, nCols] = size(allData);
+nTraces = nRows * nCols;
+
+% Build a (length x nTraces) matrix: each column is one trace
+tracesMat = cell2mat(reshape(allData, 1, []));
+tVec = t(:);
+
+% ---- Remove offset ----
+tracesMat = tracesMat - mean(tracesMat, 1);
+
+%% Peak amplitude map
+ampMap = reshape(max(tracesMat, [], 1), nRows, nCols);
+figure;
+set(gcf, 'Color', 'w', 'Units', 'inches', 'Position', [1, 1, 6, 5]);
+imagesc(ampMap);
+axis image;
+cb = colorbar;
+cb.FontSize = 11;
+cb.FontName = 'Arial';
+cb.LineWidth = 1.2;
+xlabel('Column', 'FontSize', 13, 'FontName', 'Arial');
+ylabel('Row', 'FontSize', 13, 'FontName', 'Arial');
+title('Peak amplitude per grid position', 'FontSize', 13, 'FontName', 'Arial');
+ax = gca;
+ax.FontSize = 11;
+ax.FontName = 'Arial';
+ax.LineWidth = 1.2;
+ax.Box = 'on';
+ax.TickDir = 'in';
+ax.XTick = 1:nCols;
+ax.YTick = 1:nRows;
+tight_layout = @() set(gca, 'LooseInset', get(gca, 'TightInset') + [0.01 0.01 0.01 0.01]);
+tight_layout();
+%% SNR map 
+% Define signal and noise time windows (THIS WILL CHANGE WITH THE TRANSDUCER AND ToF)
+tSigStart   = 2e-6;    tSigStop   = 8e-6;
+tNoiseStart = 8e-6;   tNoiseStop = 10e-6;
+
+tRow = t(:).';   % row vector for masking
+sigMask   = (tRow >= tSigStart)   & (tRow <= tSigStop);
+noiseMask = (tRow >= tNoiseStart) & (tRow <= tNoiseStop);
+
+% Safety check: make sure both windows actually contain samples
+if nnz(sigMask) == 0 || nnz(noiseMask) == 0
+    error(['Signal or noise window is empty. Your time vector spans ' ...
+           '%.3g to %.3g s — adjust the window edges.'], t(1), t(end));
+end
+
+SNRmap = zeros(nRows, nCols);
+for i = 1:nRows
+    for j = 1:nCols
+        sig = allData{i,j}(:);
+        sig = sig - mean(sig);                              % offset correction
+        sigPtp   = max(sig(sigMask)) - min(sig(sigMask));   % peak-to-peak
+        noiseStd = std(sig(noiseMask));                     % std
+        SNRmap(i,j) = sigPtp / noiseStd;
+    end
+end
+
+figure;
+set(gcf, 'Color', 'w', 'Units', 'inches', 'Position', [1, 1, 6, 5]);
+imagesc(SNRmap);
+axis image;
+cb = colorbar;
+cb.FontSize = 11;
+cb.FontName = 'Arial';
+cb.LineWidth = 1.2;
+ylabel(cb, 'SNR', 'FontSize', 12, 'FontName', 'Arial');
+xlabel('Column', 'FontSize', 13, 'FontName', 'Arial');
+ylabel('Row', 'FontSize', 13, 'FontName', 'Arial');
+title('SNR per grid position', 'FontSize', 13, 'FontName', 'Arial');
+ax = gca;
+ax.FontSize = 11;
+ax.FontName = 'Arial';
+ax.LineWidth = 1.2;
+ax.Box = 'on';
+ax.TickDir = 'in';
+ax.XTick = 1:nCols;
+ax.YTick = 1:nRows;
+
+% print SNR value in each cell
+for i = 1:nRows
+    for j = 1:nCols
+        text(j, i, sprintf('%.0f', SNRmap(i,j)), ...
+            'HorizontalAlignment', 'center', ...
+            'Color', 'w', 'FontSize', 10, 'FontName', 'Arial', 'FontWeight', 'bold');
+    end
+end
+%%
+% ---- Find and plot the best-SNR trace ----
+[bestSNR, bestLinIdx] = max(SNRmap(:));
+[bestRow, bestCol]    = ind2sub([nRows, nCols], bestLinIdx);
+
+sigBest = allData{bestRow, bestCol}(:);
+sigBest = sigBest - mean(sigBest);          % offset correction
+
+fprintf('Best SNR = %.1f at grid position (%d,%d)\n', bestSNR, bestRow, bestCol);
+
+figure;
+set(gcf, 'Color', 'w', 'Units', 'inches', 'Position', [1, 1, 8, 4]);
+plot(t * 1e6, sigBest, 'Color', [0.20 0.40 0.75], 'LineWidth', 1.2); hold on;
+
+% Shade signal window (green) and noise window (red)
+yl = ylim;
+patch([tSigStart tSigStop tSigStop tSigStart]*1e6, ...
+      [yl(1) yl(1) yl(2) yl(2)], [0.80 0.95 0.80], ...
+      'EdgeColor', 'none', 'FaceAlpha', 0.5);
+patch([tNoiseStart tNoiseStop tNoiseStop tNoiseStart]*1e6, ...
+      [yl(1) yl(1) yl(2) yl(2)], [1.00 0.85 0.85], ...
+      'EdgeColor', 'none', 'FaceAlpha', 0.5);
+uistack(findobj(gca,'Type','line'), 'top');   % keep trace above the patches
+
+xlabel('Time (\mus)', 'FontSize', 13, 'FontName', 'Arial');
+ylabel('Amplitude (V)', 'FontSize', 13, 'FontName', 'Arial');
+title(sprintf('Best-SNR trace: position (%d,%d), SNR = %.1f', ...
+      bestRow, bestCol, bestSNR), 'FontSize', 13, 'FontName', 'Arial');
+legend('Signal', 'Signal window', 'Noise window', 'Location', 'best');
+ax = gca;
+ax.FontSize = 11;
+ax.FontName = 'Arial';
+ax.LineWidth = 1.2;
+ax.Box = 'on';
+ax.TickDir = 'in';
+ax.XGrid = 'on';
+ax.YGrid = 'on';
+ax.GridAlpha = 0.2;
+ax.GridColor = [0.5, 0.5, 0.5];
+axis tight;
