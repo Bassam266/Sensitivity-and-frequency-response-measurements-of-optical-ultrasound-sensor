@@ -7,7 +7,7 @@ An **acousto-optical characterization platform** for measuring the response of a
 The system operates in two stages:
 
 1. **Z scan** — the echo is maximized to ensure pressure is applied at the correct position on the sensor, locating the correct focal ultrasound point.
-2. **XY scan** — once the focal point is confirmed, the xy scan aligns the focal zone of the ultrasound with the interrogation laser beam.
+2. **XY scan** — once the focal point is confirmed, the XY scan aligns the focal zone of the ultrasound with the interrogation laser beam.
 
 Together, the acoustic and optical systems measure the overall **sensitivity**, the **noise-equivalent pressure (NEP)**, and the **frequency response** of the sensor.
 
@@ -62,4 +62,4 @@ In the lab, a GUI built on top of this code is used to control the system.
 ## ⚠️ Important Notes
 
 - Make sure all circuits are terminated with **50 Ω**.
-- Measure the excitation amplitude **right before the transducer**, not at the wave generator — losses along the cable mean the true excitation amplitude differs, and this value is critical for accurate sensitivity measurements.
+- Measure the excitation amplitude **right before the transducer**, not at the wave generator; losses along the cable mean the true excitation amplitude differs, and this value is critical for accurate sensitivity measurements.
